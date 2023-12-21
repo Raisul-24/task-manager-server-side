@@ -34,11 +34,6 @@ dbConnect()
 
 const tasksCollection = client.db('Task_Management_SSC-technovision-INC').collection('tasks');
 
-// all tasks
-app.get('/tasks', async (req, res) => {
-   const result = await tasksCollection.find().toArray();
-   res.send(result);
-});
 // specific email holder user data from db
 app.get('/tasks', async (req, res) => {
    console.log(req.query.email);
@@ -50,6 +45,22 @@ app.get('/tasks', async (req, res) => {
    const result = await tasksCollection.find(query).toArray();
    res.send(result);
 });
+
+app.patch('/tasks/:id', async (req, res) => {
+   const id = req.params.id;
+   console.log(id);
+   const filter = { _id: new ObjectId(id) }
+   const { section } = req.body;
+   console.log(section)
+   const updatedDoc = {
+      $set: {
+         section: section === 'OnGoing' ? 'OnGoing' : section === 'Completed' ? 'Completed' : 'ToDo'
+      }
+   }
+   const result = await tasksCollection.updateOne(filter, updatedDoc);
+   res.send(result);
+   });
+
 // post tasks
 app.post('/tasks', async (req, res) => {
    const task = req.body;
