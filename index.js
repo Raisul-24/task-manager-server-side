@@ -32,8 +32,34 @@ const dbConnect = async () => {
 }
 dbConnect()
 
+const tasksCollection = client.db('Task_Management_SSC-technovision-INC').collection('tasks');
+
+// all tasks
+app.get('/tasks', async (req, res) => {
+   const result = await tasksCollection.find().toArray();
+   res.send(result);
+});
+// specific email holder user data from db
+app.get('/tasks', async (req, res) => {
+   console.log(req.query.email);
+   // console.log('token owner',req.user);
+   let query = {}
+   if (req.query?.email) {
+      query = { email: req.query.email }
+   }
+   const result = await tasksCollection.find(query).toArray();
+   res.send(result);
+});
+// post tasks
+app.post('/tasks', async (req, res) => {
+   const task = req.body;
+   console.log(task);
+   const result = await tasksCollection.insertOne(task);
+   res.send(result)
+});
+
 app.get('/', (req, res) => {
-   res.send('Fitness-Tracker is running!!');
+   res.send('Task Management is running!!');
 })
 
 
