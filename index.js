@@ -68,6 +68,13 @@ app.post('/tasks', async (req, res) => {
    const result = await tasksCollection.insertOne(task);
    res.send(result)
 });
+// delete tasks
+app.delete('/tasks/:id', async (req, res) => {
+   const id = req.params.id;
+   const query = { _id: new ObjectId(id) }
+   const result = await tasksCollection.deleteOne(query);
+   res.send(result);
+});
 
 app.get('/', (req, res) => {
    res.send('Task Management is running!!');
