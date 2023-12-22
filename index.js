@@ -59,8 +59,14 @@ app.patch('/tasks/:id', async (req, res) => {
    }
    const result = await tasksCollection.updateOne(filter, updatedDoc);
    res.send(result);
-   });
-
+});
+// get specific task for update
+app.get('/tasks/:id', async (req, res) => {
+   const id = req.params.id;
+   const query = { _id: new ObjectId(id) }
+   const result = await tasksCollection.findOne(query);
+   res.send(result);
+});
 // post tasks
 app.post('/tasks', async (req, res) => {
    const task = req.body;
@@ -73,6 +79,24 @@ app.delete('/tasks/:id', async (req, res) => {
    const id = req.params.id;
    const query = { _id: new ObjectId(id) }
    const result = await tasksCollection.deleteOne(query);
+   res.send(result);
+});
+ // update selected posted job
+ app.put('/tasks/:id', async (req, res) => {
+   const id = req.params.id;
+   const filter = { _id: new ObjectId(id) }
+   const options = { upsert: true }
+   const updatedJob = {
+      $set: {
+         email: req.body.email,
+         title: req.body.title,
+         description: req.body.description,
+         deadline: req.body.deadline,
+         priority: req.body.priority,
+         section: req.body.section,
+      }
+   }
+   const result = await tasksCollection.updateOne(filter, updatedJob, options);
    res.send(result);
 });
 
